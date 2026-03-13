@@ -4,7 +4,7 @@
 
   // ---- Ver se utilizador está logado ----
   if (!isset($_SESSION['user'])) {
-    header("Location: ../Authentication/login.php");
+    header("Location: .../../Authentication/login.php");
     exit();
   }
 
@@ -58,7 +58,7 @@
 							</ul>
 						</li>
 						<li class="nav-item">
-							<a href="Authentication/logout.php" class="nav-link">Logout</a>
+							<a href="../../Authentication/logout.php" class="nav-link">Logout</a>
 						</li>
 					</ul>
 				</div>
@@ -92,9 +92,9 @@
                 <td class="text-center"><?= htmlspecialchars($product['Price']) ?></td>
                 <td class="text-center"><?= htmlspecialchars($product['Stock']) ?></td>
                 <td class="text-center"><?= htmlspecialchars($product['Created_At']) ?></td>
-                <td>
-                  <a></a>
-                  <a></a>
+                <td class="text-center">
+                  <a class="btn btn-warning btn-sm" href="edit_product.php?id=<?php echo $product['ID']; ?>">Edit</a>
+                  <a class="btn btn-danger btn-sm" href="delete_product.php?id=<?php echo $product['ID']; ?>" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
                 </td>
               </tr>
             <?php endwhile; ?>

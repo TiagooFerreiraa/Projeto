@@ -4,7 +4,7 @@
 
   // ---- Ver se utilizador está logado ----
   if (!isset($_SESSION['user'])) {
-    header("Location: ../Authentication/login.php");
+    header("Location: ../../Authentication/login.php");
     exit();
   }
 
@@ -58,7 +58,7 @@
 							</ul>
 						</li>
 						<li class="nav-item">
-							<a href="Authentication/logout.php" class="nav-link">Logout</a>
+							<a href="../../Authentication/logout.php" class="nav-link">Logout</a>
 						</li>
 					</ul>
 				</div>
@@ -76,6 +76,7 @@
 						<th>Name</th>
 						<th>Description</th>
 						<th>Creation Date</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -86,6 +87,10 @@
 								<td class="text-center"><?= htmlspecialchars($category['Name']) ?></td>
 								<td class="text-center"><?= htmlspecialchars($category['Description']) ?></td>
 								<td class="text-center"><?= htmlspecialchars($category['Created_At']) ?></td>
+								<td class="text-center">
+									<a href="edit_category.php?id=<?php echo $user['ID']; ?>" class="btn btn-warning btn-sm">Edit</a>
+									<a href="delete_category.php?id=<?php echo $user['ID']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this Category?');">Delete</a>
+								</td>
 							</tr>
 						<?php endwhile; ?>
 					<?php else: ?>

@@ -4,18 +4,31 @@
 
   // ---- Ver se utilizador está logado ----
   if (!isset($_SESSION['user'])) {
-    header("Location: ../Authentication/login.php");
+    header("Location: ../../Authentication/login.php");
     exit();
   }
 
-  /* if (!isset($_SESSION['Is_Admin']) || $_SESSION['Is_Admin'] !== true) {
-    echo "Access denied.";
-    exit();
-  } */
+	$limit = 10;
+	$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+	if ($page < 1) {
+		$page = 1;
+	}
+
+	$offset = ($page - 1) * $limit;
+
+	$count_sql = "SELECT COUNT(*) AS total FROM users";
+	$count_result = $connection->query($count_sql);
+	$count_row = $count_result->fetch_assoc();
+
+	$total_users = $count_row['total'];
+	$total_pages = ceil($total_users / $limit);
+
+	$sql = "SELECT * FROM users ORDER BY ID LIMIT $limit OFFSET $offset";
+	$result = $connection->query($sql);
 
 	// ---- Buscar users da base de dados ----
-	$sql = "SELECT * FROM users ORDER BY ID";
-	$result = $connection -> query($sql);
+	// $sql = "SELECT * FROM users ORDER BY ID";
+	// $result = $connection -> query($sql);
 ?>  
 
 <!DOCTYPE html>
@@ -57,7 +70,7 @@
 							</ul>
 						</li>
 						<li class="nav-item">
-							<a href="../Authentication/logout.php" class="nav-link">Logout</a>
+							<a href="../../Authentication/logout.php" class="nav-link">Logout</a>
 						</li>
 					</ul>
 				</div>
@@ -72,8 +85,8 @@
 				<thead class="table-dark text-center">
 					<tr>
 						<th>ID</th>
-						<th>Username</th>
 						<th>Email</th>
+						<th>Username</th>
 						<th>Admin</th>
 						<th>Register Date</th>
 						<th>Actions</th>
@@ -84,8 +97,8 @@
 						<?php while ($user = $result->fetch_assoc()): ?>
 							<tr>
 								<td class="text-center"><?= htmlspecialchars($user['ID']) ?></td>
-								<td><?= htmlspecialchars($user['Username']) ?></td>
-								<td><?= htmlspecialchars($user['Email']) ?></td>
+								<td class="text-center"><?= htmlspecialchars($user['Email']) ?></td>
+								<td class="text-center"><?= htmlspecialchars($user['Username']) ?></td>
 								<td class="text-center"><?= $user['Is_Admin'] ? 'Yes' : 'No' ?></td>
 								<td class="text-center"><?= htmlspecialchars($user['Registered_Date']) ?></td>
 								<td class="text-center">
@@ -102,6 +115,28 @@
 				</tbody>
 			</table>
     </div>
+		<a href="add_user.php" class="btn btn-success mb-3">Add new user</a>
+		<nav>
+			<ul class="pagination justify-content-center">
+				<?php if ($page > 1): ?>
+					<li class="page-item">
+						<a class="page-link" href="?page=<?php $page-1 ?>">Previous</a>
+					</li>
+				<?php endif; ?>
+
+				<?php for ($i = 1; $i <= $total_pages; $i++): ?>
+					<li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+						<a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+					</li>
+				<?php endfor; ?>
+
+				<?php if ($page < $total_pages): ?>
+					<li class="page-item">
+						<a class="page-link" href="?page=<?= $page+1 ?>">Next</a>
+					</li>
+				<?php endif; ?>
+			</ul>
+		</nav>
 </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
