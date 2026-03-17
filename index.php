@@ -59,7 +59,7 @@
 			background-size: cover;
 		}
 
-		/* Ensure product cards form a consistent grid */
+		/* Garantir que os cartões de produtos formam uma grelha consistente */
 		.card {
 			display: flex;
 			flex-direction: column;
@@ -130,7 +130,7 @@
 							<?php
 							$imageSrc = 'Images/default.png';
 							if (!empty($product['Image'])) {
-								// If the image is stored as a data URL, use it directly. Otherwise treat it as a file path.
+								// Se a imagem estiver guardada como data URL, usá-la diretamente. Caso contrário, trata-a como caminho de ficheiro.
 								if (strpos($product['Image'], 'data:') === 0) {
 									$imageSrc = $product['Image'];
 								} else {

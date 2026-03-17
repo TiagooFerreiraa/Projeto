@@ -2,13 +2,13 @@
   session_start();
   include 'Connection/connection.php';
 
-  // ---- Require login ----
+  // ---- Requer login ----
   if (!isset($_SESSION['user'])) {
     header("Location: Authentication/login.php");
     exit();
   }
 
-  // ---- Load categories for navbar ----
+  // ---- Carregar categorias para a navbar ----
   $cat_sql = "SELECT id, name FROM categories ORDER BY name";
   $cat_result = $connection->query($cat_sql);
   $categories = [];

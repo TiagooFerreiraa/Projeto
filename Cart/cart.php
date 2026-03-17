@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 
 $userId = intval($_SESSION['user_id']);
 
-// Get active cart (create if missing)
+// Obter carrinho activo (criar se não existir)
 $cartSql = "SELECT ID FROM carts WHERE User_ID = ? AND Status = 'active' LIMIT 1";
 $stmt = $connection->prepare($cartSql);
 $stmt->bind_param('i', $userId);
@@ -29,16 +29,16 @@ if (!$cart) {
   $cartId = $cart['ID'];
 }
 
-// Handle checkout request (simulated MBWay payment)
+// Processar pedido de checkout (MBWay simulado)
 $checkoutMessage = '';
 $checkoutError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
   $mbwayPhone = trim($_POST['mbway_phone'] ?? '');
 
-  // Basic validation: Portuguese MBWay phone numbers are usually 9 digits
+  // Validação básica: números MBWay em Portugal têm normalmente 9 dígitos
   if (!preg_match('/^\s*\d{9}\s*$/', $mbwayPhone)) {
-    $checkoutError = 'Please enter a valid 9-digit phone number for MBWay.';
+    $checkoutError = 'Por favor introduza um número de 9 dígitos para MBWay.';
   } else {
     $deleteSql = "DELETE FROM cart_items WHERE Cart_ID = ?";
     $stmt = $connection->prepare($deleteSql);
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
   }
 }
 
-// Fetch cart items
+// Obter itens do carrinho
 $sql = "SELECT ci.ID AS CartItemID, ci.Quantity, p.ID AS ProductID, p.Name, p.Price, p.Stock, p.Image
         FROM cart_items ci
         JOIN products p ON p.ID = ci.Product_ID

@@ -10,7 +10,7 @@
 
   // ---- Ver se utilizador é admin ----
   /* if (!isset($_SESSION['Is_Admin']) || $_SESSION['Is_Admin'] !== true) {
-    echo "Access denied.";
+    echo "Acesso negado.";
     exit();
   } */
 

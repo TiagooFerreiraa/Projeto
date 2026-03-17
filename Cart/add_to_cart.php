@@ -16,7 +16,7 @@ if ($productId <= 0) {
   exit();
 }
 
-// Ensure user has an active cart
+// Garantir que o utilizador tem um carrinho activo
 $cartSql = "SELECT ID FROM carts WHERE User_ID = ? AND Status = 'active' LIMIT 1";
 $stmt = $connection->prepare($cartSql);
 $stmt->bind_param('i', $userId);
@@ -36,7 +36,7 @@ if (!$cart) {
   $cartId = $cart['ID'];
 }
 
-// Add or update item
+// Adicionar ou actualizar item
 $checkSql = "SELECT ID, Quantity FROM cart_items WHERE Cart_ID = ? AND Product_ID = ?";
 $stmt = $connection->prepare($checkSql);
 $stmt->bind_param('ii', $cartId, $productId);
@@ -60,6 +60,6 @@ if ($item) {
   $stmt->close();
 }
 
-// After adding to cart, always go to the cart page.
+// Depois de adicionar ao carrinho, redirecionar para a página do carrinho.
 header('Location: cart.php');
 exit();
