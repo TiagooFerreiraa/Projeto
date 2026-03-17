@@ -23,6 +23,7 @@
 			$stmt -> bind_param("sss", $Username, $Email, $HashedPassword);
 
 			if ($stmt->execute()) {
+				$_SESSION['user_id'] = $connection->insert_id;
 				$_SESSION['user'] = $Email;
 				header("Location: index.php");
 				exit();

@@ -16,11 +16,25 @@
     $price = $_POST['Price'];
     $stock = $_POST['Stock'];
 
-    $sql = "UPDATE products SET Name = ?, Description = ?, Price = ?, Stock = ? WHERE ID = ?";
+    $imageDataUrl = null;
+    if (isset($_FILES['Image']) && $_FILES['Image']['error'] === UPLOAD_ERR_OK) {
+      $imageData = file_get_contents($_FILES['Image']['tmp_name']);
+      $finfo = finfo_open(FILEINFO_MIME_TYPE);
+      $mimeType = finfo_file($finfo, $_FILES['Image']['tmp_name']);
+      finfo_close($finfo);
+      $imageDataUrl = 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
+    }
 
-    $stmt = mysqli_prepare($connection, $sql);
-    mysqli_stmt_bind_param($stmt, "ssssi", $name, $description, $price, $stock, $id);
-    
+    if ($imageDataUrl !== null) {
+      $sql = "UPDATE products SET Name = ?, Description = ?, Price = ?, Stock = ?, Image = ? WHERE ID = ?";
+      $stmt = mysqli_prepare($connection, $sql);
+      mysqli_stmt_bind_param($stmt, "ssdiss", $name, $description, $price, $stock, $imageDataUrl, $id);
+    } else {
+      $sql = "UPDATE products SET Name = ?, Description = ?, Price = ?, Stock = ? WHERE ID = ?";
+      $stmt = mysqli_prepare($connection, $sql);
+      mysqli_stmt_bind_param($stmt, "ssssi", $name, $description, $price, $stock, $id);
+    }
+
     if (!mysqli_stmt_execute($stmt)) {
       die("Error updating product: " . mysqli_error($connection));
     }
@@ -57,7 +71,7 @@
 </head>
 <body class="container mt-5">
   <h2 class="mb-4">Edit Product</h2>
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?= $product['ID'] ?>">
 
     <div class="mb-3">
@@ -75,6 +89,24 @@
     <div class="mb-3">
       <label class="form-label">Stock</label>
       <input type="number" name="Stock" class="form-control" value="<?= htmlspecialchars($product['Stock']) ?>" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Current Image</label><br>
+      <?php
+        $currentImageSrc = 'https://via.placeholder.com/120?text=No+image';
+        if (!empty($product['Image'])) {
+          if (strpos($product['Image'], 'data:') === 0) {
+            $currentImageSrc = $product['Image'];
+          } else {
+            $currentImageSrc = htmlspecialchars($product['Image']);
+          }
+        }
+      ?>
+      <img src="<?= $currentImageSrc ?>" width="120" class="mb-2">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Change Image</label>
+      <input type="file" name="Image" class="form-control" accept="image/*">
     </div>
     <button type="submit" class="btn btn-primary">Update Product</button>
     <a href="products_management.php" class="btn btn-secondary">Cancel</a>

@@ -8,7 +8,7 @@
 		$Password = $_POST['Password'];
 
 		// ---- Fazer busca ----
-		$sql = "SELECT Password, Is_Admin FROM users WHERE Email = ?";
+		$sql = "SELECT ID, Username, Password, Is_Admin FROM users WHERE Email = ?";
 		$stmt = $connection -> prepare($sql);
 		$stmt -> bind_param("s", $Email);
 		$stmt -> execute();
@@ -17,12 +17,17 @@
 		// ---- Se o login funcionar ou não ----
 		if ($result && $result -> num_rows > 0) {
 			$row = $result -> fetch_assoc();
+
+			$userId = $row['ID'];
+			$username = $row['Username'];
 			$hashedPassword = $row['Password'];
 			$isAdmin = $row['Is_Admin'];
 
 			if (password_verify($Password, $hashedPassword)) {
 				// ---- Se login for sucesso ----
-				$_SESSION['user'] = $Email;
+				$_SESSION['user_id'] = $userId;
+				$_SESSION['user'] = $username;
+				$_SESSION['Email'] = $Email;
 				$_SESSION['Is_Admin'] = $isAdmin;
 
 				if ($isAdmin) {
