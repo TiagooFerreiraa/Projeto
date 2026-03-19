@@ -44,7 +44,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration</title>
+    <title>Administração</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
       body {
@@ -56,29 +56,29 @@
   <body>
     <nav class="navbar bg-body-tertiary fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">NovusStore Administration</a>
+        <a class="navbar-brand" href="#">NovusStore Administração</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
           <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">NovusStore Administration - <?= htmlspecialchars($_SESSION['user']) ?></h5>
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">NovusStore Administração - <?= htmlspecialchars($_SESSION['user']) ?></h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Administration
+                  Administração
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="../UserManagement/users_management.php" class="dropdown-item">Users</a></li>
-                  <li><a href="products_management.php" class="dropdown-item active">Products</a></li>
-                  <li><a href="../CategoryManagement/categories_management.php" class="dropdown-item">Categories</a></li>
+                  <li><a href="../UserManagement/users_management.php" class="dropdown-item">Utilizadores</a></li>
+                  <li><a href="products_management.php" class="dropdown-item active">Produtos</a></li>
+                  <li><a href="../CategoryManagement/categories_management.php" class="dropdown-item">Categorias</a></li>
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="../../Authentication/logout.php" class="nav-link">Logout</a>
+                <a href="../../Authentication/logout.php" class="nav-link">Terminar sessão</a>
               </li>
             </ul>
           </div>
@@ -86,19 +86,19 @@
       </div>
     </nav>
     <main class="container my-5">
-      <h2 class="mb-4 text-center">Products Management</h2>
+      <h2 class="mb-4 text-center">Gestão de Produtos</h2>
       <div class="table-responsive">
         <table class="table table-striped table-bordered align-middle">
           <thead class="table-dark text-center">
             <tr>
               <th>ID</th>
-              <th>Category</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Creation Date</th>
-              <th>Actions</th>
+              <th>Categoria</th>
+              <th>Nome</th>
+              <th>Descrição</th>
+              <th>Preço</th>
+              <th>Estoque</th>
+              <th>Data de Criação</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -113,25 +113,25 @@
                   <td class="text-center"><?= htmlspecialchars($product['Stock']) ?></td>
                   <td class="text-center"><?= htmlspecialchars($product['Created_At']) ?></td>
                   <td class="text-center">
-                    <a class="btn btn-warning btn-sm" href="edit_product.php?id=<?php echo $product['ID']; ?>">Edit</a>
-                    <a class="btn btn-danger btn-sm" href="delete_product.php?id=<?php echo $product['ID']; ?>" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                    <a class="btn btn-warning btn-sm" href="edit_product.php?id=<?php echo $product['ID']; ?>">Editar</a>
+                    <a class="btn btn-danger btn-sm" href="delete_product.php?id=<?php echo $product['ID']; ?>" onclick="return confirm('Tens a certeza que queres excluir este utilizador?');">Excluir</a>
                   </td>
                 </tr>
               <?php endwhile; ?>
             <?php else: ?>
               <tr>
-                <td colspan="8" class="text-center">No products found.</td>
+                <td colspan="8" class="text-center">Sem produtos encontrados.</td>
               </tr>
             <?php endif; ?>
           </tbody>
         </table>
       </div>
-      <a href="add_product.php" class="btn btn-success mb-3">Add new product</a>
+      <a href="add_product.php" class="btn btn-success mb-3">Adicionar Produto</a>
       <nav>
 				<ul class="pagination justify-content-center">
 					<?php if ($page > 1): ?>
 						<li class="page-item">
-							<a class="page-link" href="?page=<?php $page-1 ?>">Previous</a>
+							<a class="page-link" href="?page=<?php $page-1 ?>">Anterior</a>
 						</li>
 					<?php endif; ?>
 
@@ -143,7 +143,7 @@
 
 					<?php if ($page < $total_pages): ?>
 						<li class="page-item">
-							<a class="page-link" href="?page=<?= $page+1 ?>">Next</a>
+							<a class="page-link" href="?page=<?= $page+1 ?>">Próximo</a>
 						</li>
 					<?php endif; ?>
 				</ul>

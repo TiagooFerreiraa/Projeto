@@ -86,24 +86,24 @@
 			</button>
 			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 				<div class="offcanvas-header">
-					<h5 class="offcanvas-title" id="offcanvasNavbarLabel">NovusStore - Welcome <?= htmlspecialchars($_SESSION['user']) ?></h5>
+					<h5 class="offcanvas-title" id="offcanvasNavbarLabel">NovusStore - Bem-vindo <?= htmlspecialchars($_SESSION['user']) ?></h5>
 					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 				</div>
 				<div class="offcanvas-body">
 					<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
 						<li class="nav-item">
 							<a class="nav-link active" aria-current="page" href="index.php">
-						<i class="bi bi-house-door-fill me-2"></i>Home
+						<i class="bi bi-house-door-fill me-2"></i>Inicio
 					</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="Cart/cart.php">
-						<i class="bi bi-cart-fill me-2"></i>Cart
+						<i class="bi bi-cart-fill me-2"></i>Carrinho
 					</a>
 						</li>
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								<i class="bi bi-list-ul me-2"></i>Categories
+								<i class="bi bi-list-ul me-2"></i>Categorias
 							</a>
 							<ul class="dropdown-menu">
 								<?php foreach ($categories as $cat): ?>
@@ -114,7 +114,7 @@
 							</ul>
 						</li>
 						<li class="nav-item">
-							<a href="Authentication/logout.php" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+							<a href="Authentication/logout.php" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i>Terminar sessão</a>
 						</li>
 					</ul>
 				</div>
@@ -142,15 +142,15 @@
 							<div class="card-body">
 								<h5 class="card-title"><?= htmlspecialchars($product['Name']) ?></h5>
 								<p class="card-text"><?= htmlspecialchars($product['Description']) ?></p>
-								<p class="card-text"><strong>Category:</strong> <?= htmlspecialchars($product['Category_Name']) ?></p>
-								<p class="card-text"><strong>Price:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
-								<a href="products.php?id=<?= $product['ID'] ?>" class="btn btn-primary">View Product</a>
+								<p class="card-text"><strong>Categoria:</strong> <?= htmlspecialchars($product['Category_Name']) ?></p>
+								<p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
+								<a href="products.php?id=<?= $product['ID'] ?>" class="btn btn-primary">Ver Produto</a>
 							</div>
 						</div>
 					</div>
 				<?php endforeach; ?>
 			<?php else: ?>
-				<p>No products found.</p>
+				<p>Sem produtos encontrados.</p>
 			<?php endif; ?>
 		</div>
 	</main>

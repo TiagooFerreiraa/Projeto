@@ -47,7 +47,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Category</title>
+  <title>Adicionar Produto</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <style>
     body {
@@ -57,10 +57,10 @@
   </style>
 </head>
 <body class="container mt-5">
-  <h2 class="mb-4">Add Product</h2>
+  <h2 class="mb-4">Adicionar Produto</h2>
   <form method="POST" enctype="multipart/form-data">
     <div class="mb-3">
-      <label class="form-label">Category</label>
+      <label class="form-label">Categoria</label>
       <select class="form-select" name="Category_ID">
         <?php while($cat = mysqli_fetch_assoc($cat_result)) { ?>
           <option value="<?php echo $cat['ID']; ?>">
@@ -70,27 +70,27 @@
       </select>
     </div>
     <div class="mb-3">
-      <label class="form-label">Name</label>
-      <input type="text" name="Name" class="form-control" required>
+      <label class="form-label">Nome</label>
+      <input type="text" name="Name" class="form-control" required placeholder="Ex: produto123">
     </div>
     <div class="mb-3">
-      <label class="form-label">Description</label>
-      <input type="text" name="Description" class="form-control" required>
+      <label class="form-label">Descrição</label>
+      <input type="text" name="Description" class="form-control" required placeholder="Insira uma descrição para o produto">
     </div>
     <div class="mb-3">
-      <label class="form-label">Price</label>
-      <input type="number" name="Price" class="form-control" required>
+      <label class="form-label">Preço</label>
+      <input type="number" name="Price" class="form-control" required placeholder="Ex: 2.99">
     </div>
     <div class="mb-3">
-      <label class="form-label">Stock</label>
-      <input type="number" name="Stock" class="form-control" required>
+      <label class="form-label">Estoque</label>
+      <input type="number" name="Stock" class="form-control" required placeholder="Ex: 20">
     </div>
     <div class="mb-3">
-      <label class="form-label">Product Image</label>
+      <label class="form-label">Imagem do Produto</label>
       <input type="file" name="Image" class="form-control" accept="image/*" required>
     </div>
-    <button type="submit" class="btn btn-primary">Create Product</button>
-    <a href="products_management.php" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Criar Produto</button>
+    <a href="products_management.php" class="btn btn-secondary">Cancelar</a>
   </form>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>

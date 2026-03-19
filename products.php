@@ -164,15 +164,15 @@
             <div class="card-body">
               <h1 class="card-title"><?= htmlspecialchars($product['Name']) ?></h1>
               <p class="card-text"><?= nl2br(htmlspecialchars($product['Description'])) ?></p>
-              <p class="card-text"><strong>Category:</strong> <?= htmlspecialchars($product['Category_Name']) ?></p>
-              <p class="card-text"><strong>Price:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
-              <p class="card-text"><strong>Stock:</strong> <?= htmlspecialchars($product['Stock']) ?></p>
+              <p class="card-text"><strong>Categoria:</strong> <?= htmlspecialchars($product['Category_Name']) ?></p>
+              <p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
+              <p class="card-text"><strong>Unidades:</strong> <?= htmlspecialchars($product['Stock']) ?></p>
               <form method="POST" action="Cart/add_to_cart.php" class="d-flex gap-2">
                 <input type="hidden" name="product_id" value="<?= $product['ID'] ?>">
                 <input type="number" name="quantity" value="1" min="1" max="<?= htmlspecialchars($product['Stock']) ?>" class="form-control" style="width: 90px;">
-                <button type="submit" class="btn btn-success">Add to cart</button>
+                <button type="submit" class="btn btn-success">Adicionar ao Carrinho</button>
               </form>
-              <a href="index.php" class="btn btn-secondary mt-2">Back to Home</a>
+              <a href="index.php" class="btn btn-secondary mt-2">Voltar</a>
             </div>
           </div>
         </div>

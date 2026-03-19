@@ -44,7 +44,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Category</title>
+  <title>Editar Categoria</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <style>
     body {
@@ -54,20 +54,20 @@
   </style>
 </head>
 <body class="container mt-5">
-  <h2 class="mb-4">Edit Category</h2>
+  <h2 class="mb-4">Editar Categoria</h2>
   <form method="POST">
     <input type="hidden" name="id" value="<?= $category['ID'] ?>">
 
     <div class="mb-3">
-      <label class="form-label">Name</label>
+      <label class="form-label">Nome</label>
       <input type="text" name="Name" class="form-control" value="<?= htmlspecialchars($category['Name']) ?>" required>
     </div>
     <div class="mb-3">
-      <label class="form-label">Description</label>
+      <label class="form-label">Descrição</label>
       <input type="text" name="Description" class="form-control" value="<?= htmlspecialchars($category['Description']) ?>" required>
     </div>
-    <button type="submit" class="btn btn-primary">Update Category</button>
-    <a href="categories_management.php" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Atualizar Categoria</button>
+    <a href="categories_management.php" class="btn btn-secondary">Cancelar</a>
   </form>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
