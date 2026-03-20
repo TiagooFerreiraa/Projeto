@@ -9,7 +9,7 @@
   }
 
   // ---- Carregar categorias para a navbar ----
-  $cat_sql = "SELECT id, name FROM categories ORDER BY name";
+  $cat_sql = "SELECT id, name, COALESCE(Icon, 'bi-list-ul') AS Icon FROM categories ORDER BY name";
   $cat_result = $connection->query($cat_sql);
   $categories = [];
   if ($cat_result && $cat_result->num_rows > 0) {
@@ -21,14 +21,29 @@
   $productId = isset($_GET['id']) ? intval($_GET['id']) : 0;
   $categoryId = isset($_GET['category_id']) ? intval($_GET['category_id']) : 0;
 
+  $categoryName = 'Produtos';
+  if ($categoryId > 0) {
+    $category_sql = "SELECT Name FROM categories WHERE ID = ?";
+    $cat_stmt = $connection->prepare($category_sql);
+    $cat_stmt->bind_param('i', $categoryId);
+    $cat_stmt->execute();
+    $category_result = $cat_stmt->get_result();
+    if ($category_result && $category_result->num_rows > 0) {
+      $category_row = $category_result->fetch_assoc();
+      $categoryName = $category_row['Name'];
+    }
+    $cat_stmt->close();
+  }
+
   $product = null;
   $products = [];
 
   $notFound = false;
   if ($productId > 0) {
-    $sql = "SELECT products.*, categories.Name AS Category_Name 
+    $sql = "SELECT products.*, categories.Name AS Category_Name, users.Username AS Publisher_Name, users.Phone_Number AS Publisher_Phone 
             FROM products 
             LEFT JOIN categories ON products.Category_ID = categories.ID 
+            LEFT JOIN users ON products.Publisher_ID = users.ID 
             WHERE products.ID = ?";
     $stmt = $connection->prepare($sql);
     $stmt->bind_param('i', $productId);
@@ -40,9 +55,10 @@
       $notFound = true;
     }
   } else {
-    $sql = "SELECT products.*, categories.Name AS Category_Name 
+    $sql = "SELECT products.*, categories.Name AS Category_Name, users.Username AS Publisher_Name, users.Phone_Number AS Publisher_Phone 
             FROM products 
-            LEFT JOIN categories ON products.Category_ID = categories.ID";
+            LEFT JOIN categories ON products.Category_ID = categories.ID 
+            LEFT JOIN users ON products.Publisher_ID = users.ID";
 
     if ($categoryId > 0) {
       $sql .= " WHERE products.Category_ID = ?";
@@ -68,9 +84,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $product ? htmlspecialchars($product['Name']) : 'Products' ?></title>
+  <title><?= $product ? htmlspecialchars($product['Name']) : htmlspecialchars($categoryName) ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="Images/logoo.png">
   <style>
     body {
       background: url('Images/main_bg.png') no-repeat center center fixed;
@@ -103,36 +120,44 @@
       </button>
       <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">NovusStore - Welcome <?= htmlspecialchars($_SESSION['user']) ?></h5>
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">NovusStore - Bem-vindo <?= htmlspecialchars($_SESSION['user']) ?></h5>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
               <a class="nav-link" href="index.php">
-                <i class="bi bi-house-door-fill me-2"></i>Home
+                <i class="bi bi-house-door-fill me-2"></i>Inicio
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="Cart/cart.php">
-                <i class="bi bi-cart-fill me-2"></i>Cart
+                <i class="bi bi-cart-fill me-2"></i>Carrinho
               </a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-list-ul me-2"></i>Categories
+                <i class="bi bi-list-ul me-2"></i>Categorias
               </a>
               <ul class="dropdown-menu">
                 <?php foreach ($categories as $cat): ?>
                   <li>
-                    <a class="dropdown-item" href="products.php?category_id=<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></a>
+                    <a class="dropdown-item" href="products.php?category_id=<?= $cat['id'] ?>">
+                      <i class="bi <?= htmlspecialchars($cat['Icon'] ?? 'bi-list-ul') ?> me-2"></i>
+                      <?= htmlspecialchars($cat['name']) ?>
+                    </a>
                   </li>
                 <?php endforeach; ?>
               </ul>
             </li>
             <li class="nav-item">
+              <a href="profile.php" class="nav-link">
+                <i class="bi bi-person-circle me-2"></i>Perfil
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="Authentication/logout.php" class="nav-link">
-                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                <i class="bi bi-box-arrow-right me-2"></i>Terminar sessão
               </a>
             </li>
           </ul>
@@ -144,7 +169,7 @@
   <main class="container my-5">
     <?php if ($notFound): ?>
       <div class="alert alert-warning" role="alert">
-        Product not found.
+        Sem Produtos Encontrados
       </div>
     <?php elseif ($product): ?>
       <div class="row justify-content-center align-items-center" style="min-height: calc(100vh - 220px);">
@@ -165,6 +190,7 @@
               <h1 class="card-title"><?= htmlspecialchars($product['Name']) ?></h1>
               <p class="card-text"><?= nl2br(htmlspecialchars($product['Description'])) ?></p>
               <p class="card-text"><strong>Categoria:</strong> <?= htmlspecialchars($product['Category_Name']) ?></p>
+              <p class="card-text"><strong>Vendedor:</strong> <?= htmlspecialchars($product['Publisher_Name'] ?? 'Desconhecido') ?> <br><small><strong>Tel:</strong> <?= htmlspecialchars($product['Publisher_Phone'] ?? 'N/D') ?></small></p>
               <p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
               <p class="card-text"><strong>Unidades:</strong> <?= htmlspecialchars($product['Stock']) ?></p>
               <form method="POST" action="Cart/add_to_cart.php" class="d-flex gap-2">
@@ -178,7 +204,7 @@
         </div>
       </div>
     <?php else: ?>
-      <h1>Products</h1>
+      <h1><?= htmlspecialchars($categoryName) ?></h1>
       <?php if (!empty($products)): ?>
         <div class="row row-cols-1 row-cols-md-3 g-4">
           <?php foreach ($products as $product): ?>
@@ -198,15 +224,16 @@
                 <div class="card-body d-flex flex-column">
                   <h5 class="card-title"><?= htmlspecialchars($product['Name']) ?></h5>
                   <p class="card-text"><?= htmlspecialchars($product['Description']) ?></p>
-                  <p class="card-text"><strong>Price:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
-                  <a href="products.php?id=<?= $product['ID'] ?>" class="btn btn-primary mt-auto">View Product</a>
+                  <p class="card-text"><strong>Vendedor:</strong> <?= htmlspecialchars($product['Publisher_Name'] ?? 'Desconhecido') ?> <br><small><strong>Tel:</strong> <?= htmlspecialchars($product['Publisher_Phone'] ?? 'N/D') ?></small></p>
+                  <p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
+                  <a href="products.php?id=<?= $product['ID'] ?>" class="btn btn-primary mt-auto">Ver Produto</a>
                 </div>
               </div>
             </div>
           <?php endforeach; ?>
         </div>
       <?php else: ?>
-        <p>No products found.</p>
+        <p>Sem produtos encontrados.</p>
       <?php endif; ?>
     <?php endif; ?>
   </main>

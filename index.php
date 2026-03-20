@@ -15,7 +15,7 @@
 	}
 
 	// ---- Buscar categorias da base de dados ----
-	$sql = "SELECT id, name FROM categories ORDER BY name";
+	$sql = "SELECT id, name, COALESCE(Icon, 'bi-list-ul') AS Icon FROM categories ORDER BY name";
 	$result = $connection->query($sql);
 
 	$categories = [];
@@ -29,9 +29,10 @@
 
 	// ---- Buscar produtos da base de dados ----
 
-	$product_sql = "SELECT products.*, categories.Name AS Category_Name 
+	$product_sql = "SELECT products.*, categories.Name AS Category_Name, users.Username AS Publisher_Name, users.Phone_Number AS Publisher_Phone 
 									FROM products 
 									LEFT JOIN categories ON products.Category_ID = categories.ID
+									LEFT JOIN users ON products.Publisher_ID = users.ID
 									ORDER BY products.ID";
 	$product_result = $connection->query($product_sql);
 
@@ -49,10 +50,10 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Main Page</title>
+	<title>Página Inicial</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-	<link rel="icon" type="image/x-icon" href="Images/logo.png">
+	<link rel="icon" type="image/x-icon" href="Images/logoo.png">
 	<style>
 		body {
 			background: url('Images/main_bg.png') no-repeat center center fixed;
@@ -108,10 +109,17 @@
 							<ul class="dropdown-menu">
 								<?php foreach ($categories as $cat): ?>
 									<li>
-										<a class="dropdown-item" href="products.php?category_id=<?php echo $cat['id']; ?>"><?php echo htmlspecialchars($cat['name']); ?></a>
+										<a class="dropdown-item" href="products.php?category_id=<?php echo $cat['id']; ?>">
+									<i class="bi <?= htmlspecialchars($cat['Icon'] ?? 'bi-list-ul') ?> me-2"></i>
+									<?php echo htmlspecialchars($cat['name']); ?>
+								</a>
 									</li>
 								<?php endforeach; ?>
 							</ul>
+						</li>
+						<li class="nav-item">								<a href="profile.php" class="nav-link"><i class="bi bi-person-circle me-2"></i>Perfil</a>
+							</li>
+							<li class="nav-item">					<a href="sell_product.php" class="nav-link"><i class="bi bi-plus-circle me-2"></i>Vender um Produto</a>
 						</li>
 						<li class="nav-item">
 							<a href="Authentication/logout.php" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i>Terminar sessão</a>
@@ -143,8 +151,9 @@
 								<h5 class="card-title"><?= htmlspecialchars($product['Name']) ?></h5>
 								<p class="card-text"><?= htmlspecialchars($product['Description']) ?></p>
 								<p class="card-text"><strong>Categoria:</strong> <?= htmlspecialchars($product['Category_Name']) ?></p>
-								<p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
-								<a href="products.php?id=<?= $product['ID'] ?>" class="btn btn-primary">Ver Produto</a>
+						<p class="card-text"><strong>Vendedor:</strong> <?= htmlspecialchars($product['Publisher_Name'] ?? 'Desconhecido') ?> <br><small><strong>Tel:</strong> <?= htmlspecialchars($product['Publisher_Phone'] ?? 'N/D') ?></small></p>
+						<p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
+						<a href="products.php?id=<?= $product['ID'] ?>" class="btn btn-primary">Ver Produto</a>
 							</div>
 						</div>
 					</div>

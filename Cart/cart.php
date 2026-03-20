@@ -40,15 +40,137 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
   if (!preg_match('/^\s*\d{9}\s*$/', $mbwayPhone)) {
     $checkoutError = 'Por favor introduza um número de 9 dígitos para MBWay.';
   } else {
-    $deleteSql = "DELETE FROM cart_items WHERE Cart_ID = ?";
-    $stmt = $connection->prepare($deleteSql);
+    // Recolher item do carrinho com informação de vendedor e stock
+    $itemsSql = "SELECT ci.Quantity, p.ID AS ProductID, p.Price, p.Publisher_ID, p.Stock 
+                 FROM cart_items ci 
+                 JOIN products p ON p.ID = ci.Product_ID 
+                 WHERE ci.Cart_ID = ?";
+    $stmt = $connection->prepare($itemsSql);
     $stmt->bind_param('i', $cartId);
     $stmt->execute();
+    $result = $stmt->get_result();
+
+    $subtotal = 0;
+    $sellerAmounts = [];
+    $cartItems = [];
+    $stockError = false;
+
+    $selfPurchaseError = false;
+    while ($row = $result->fetch_assoc()) {
+      $cartItems[] = $row;
+
+      if (intval($row['Publisher_ID']) === $userId) {
+        $selfPurchaseError = true;
+        break;
+      }
+
+      if ($row['Quantity'] > $row['Stock']) {
+        $stockError = true;
+        break;
+      }
+
+      $lineTotal = $row['Price'] * $row['Quantity'];
+      $subtotal += $lineTotal;
+      $sellerId = intval($row['Publisher_ID']);
+      if ($sellerId > 0) {
+        if (!isset($sellerAmounts[$sellerId])) {
+          $sellerAmounts[$sellerId] = 0;
+        }
+        $sellerAmounts[$sellerId] += $lineTotal;
+      }
+    }
     $stmt->close();
 
-    $checkoutMessage = 'Payment simulated via MBWay (+' . htmlspecialchars($mbwayPhone) . '). Your cart has been cleared.';
+    if ($selfPurchaseError) {
+      $checkoutError = 'Não pode comprar os seus próprios produtos.';
+    } elseif ($stockError) {
+      $checkoutError = 'Erro no checkout: quantidade no carrinho excede stock disponível. Atualize o carrinho e tente novamente.';
+    } else {
+      $commissionRate = 0.02; // 2% de comissão do site (use 0.04 para 4%)
+      $commissionValue = round($subtotal * $commissionRate, 2);
+      $totalWithCommission = round($subtotal + $commissionValue, 2);
+
+      $connection->begin_transaction();
+      $canCommit = true;
+
+      // Atualizar stock dos produtos e apagar quando ficar 0
+      foreach ($cartItems as $item) {
+        $newStock = intval($item['Stock']) - intval($item['Quantity']);
+
+        if ($newStock > 0) {
+          $updateStockSql = "UPDATE products SET Stock = ? WHERE ID = ?";
+          $stmt = $connection->prepare($updateStockSql);
+          $stmt->bind_param('ii', $newStock, $item['ProductID']);
+          if (!$stmt->execute()) {
+            $canCommit = false;
+            break;
+          }
+          $stmt->close();
+        } else {
+          // Remover quaisquer cart_items associados antes de deletar o produto para evitar erro FK.
+          $deleteCartItemsForProduct = "DELETE FROM cart_items WHERE Product_ID = ?";
+          $stmt = $connection->prepare($deleteCartItemsForProduct);
+          $stmt->bind_param('i', $item['ProductID']);
+          if (!$stmt->execute()) {
+            $canCommit = false;
+            break;
+          }
+          $stmt->close();
+
+          $deleteProductSql = "DELETE FROM products WHERE ID = ?";
+          $stmt = $connection->prepare($deleteProductSql);
+          $stmt->bind_param('i', $item['ProductID']);
+          if (!$stmt->execute()) {
+            $canCommit = false;
+            break;
+          }
+          $stmt->close();
+        }
+      }
+
+      // Atualizar balances dos sellers
+      if ($canCommit) {
+        foreach ($sellerAmounts as $sellerId => $sellerGross) {
+          $sellerNet = round($sellerGross * (1 - $commissionRate), 2);
+          $updateSeller = "UPDATE users SET Balance = Balance + ? WHERE ID = ?";
+          $stmt = $connection->prepare($updateSeller);
+          $stmt->bind_param('di', $sellerNet, $sellerId);
+          if (!$stmt->execute()) {
+            $canCommit = false;
+            break;
+          }
+          $stmt->close();
+        }
+      }
+
+      if ($canCommit) {
+        // Esvaziar o carrinho
+        $deleteSql = "DELETE FROM cart_items WHERE Cart_ID = ?";
+        $stmt = $connection->prepare($deleteSql);
+        $stmt->bind_param('i', $cartId);
+        if (!$stmt->execute()) {
+          $canCommit = false;
+        }
+        $stmt->close();
+      }
+
+      if ($canCommit) {
+        $connection->commit();
+        $checkoutMessage = sprintf(
+          'Pagamento simulado via MBWay (+%s). Total do carrinho: €%.2f, Comissão: €%.2f, Total pago: €%.2f. O valor líquido foi creditado nos vendedores.',
+          htmlspecialchars($mbwayPhone),
+          $subtotal,
+          $commissionValue,
+          $totalWithCommission
+        );
+      } else {
+        $connection->rollback();
+        $checkoutError = 'Ocorreu um erro durante o processamento do checkout. Por favor tente novamente.';
+      }
+    }
   }
 }
+
 
 // Obter itens do carrinho
 $sql = "SELECT ci.ID AS CartItemID, ci.Quantity, p.ID AS ProductID, p.Name, p.Price, p.Stock, p.Image
@@ -84,6 +206,7 @@ function getImageSrc($product) {
   <title>Carrinho</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../Images/logoo.png">
   <style>
     body {
       background: url('../Images/main_bg.png') no-repeat center center fixed;
@@ -123,6 +246,9 @@ function getImageSrc($product) {
                   </li>
                 <?php endwhile; ?>
               </ul>
+            </li>
+            <li class="nav-item">
+              <a href="../profile.php" class="nav-link"><i class="bi bi-person-circle me-2"></i>Perfil</a>
             </li>
             <li class="nav-item">
               <a href="../Authentication/logout.php" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i>Terminar sessão</a>
@@ -187,9 +313,24 @@ function getImageSrc($product) {
             <?php endforeach; ?>
           </tbody>
           <tfoot>
+            <?php
+              $commissionRate = 0.02; // 2% de comissão do site; ajustar para 0.04 se quiser 4%
+              $commissionValue = $grandTotal * $commissionRate;
+              $finalTotal = $grandTotal + $commissionValue;
+            ?>
             <tr>
               <th colspan="3" class="text-end">Total dos produtos</th>
               <th>$<?= number_format($grandTotal, 2) ?></th>
+              <th></th>
+            </tr>
+            <tr>
+              <th colspan="3" class="text-end">Comissão do site (<?= ($commissionRate*100) ?>%)</th>
+              <th>$<?= number_format($commissionValue, 2) ?></th>
+              <th></th>
+            </tr>
+            <tr>
+              <th colspan="3" class="text-end">Total com Comissão</th>
+              <th>$<?= number_format($finalTotal, 2) ?></th>
               <th></th>
             </tr>
           </tfoot>
@@ -204,7 +345,7 @@ function getImageSrc($product) {
             <form method="POST" class="row g-2 align-items-end">
               <div class="col">
                 <label class="form-label" for="mbway_phone">Telemóvel (9 digitos)</label>
-                <input id="mbway_phone" name="mbway_phone" type="text" class="form-control" placeholder="912345678" required pattern="\d{9}">
+                <input id="mbway_phone" name="mbway_phone" type="text" class="form-control" placeholder="912345678" required pattern="\d{9}" maxlength="9">
               </div>
               <div class="col-auto">
                 <button type="submit" name="checkout" class="btn btn-success w-100">Pagar com MBWay</button>

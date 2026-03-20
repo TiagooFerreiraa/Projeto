@@ -31,8 +31,8 @@
 	$total_categories = $count_row['total'];
 	$total_pages = ceil($total_categories / $limit);
 
-	// ---- Buscar users da base de dados ----
-	$sql = "SELECT products.*, categories.Name AS Category_Name FROM products LEFT JOIN categories ON products.Category_ID = categories.ID ORDER BY products.ID LIMIT $limit OFFSET $offset";
+	// ---- Buscar products da base de dados com publisher ----
+	$sql = "SELECT products.*, categories.Name AS Category_Name, users.Username AS Publisher_Name FROM products LEFT JOIN categories ON products.Category_ID = categories.ID LEFT JOIN users ON products.Publisher_ID = users.ID ORDER BY products.ID LIMIT $limit OFFSET $offset";
 	$result = $connection -> query($sql);
 
   // $cat_result = mysqli_query($connection, $cat_sql);
@@ -46,6 +46,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administração</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../../Images/logoo.png">
     <style>
       body {
         background: url('../../Images/main_bg.png') no-repeat center center fixed;
@@ -94,6 +96,7 @@
               <th>ID</th>
               <th>Categoria</th>
               <th>Nome</th>
+              <th>Vendedor</th>
               <th>Descrição</th>
               <th>Preço</th>
               <th>Estoque</th>
@@ -108,13 +111,18 @@
                   <td class="text-center"><?= htmlspecialchars($product['ID']) ?></td>
                   <td class="text-center"><?= htmlspecialchars($product['Category_Name']) ?></td>
                   <td class="text-center"><?= htmlspecialchars($product['Name']) ?></td>
+                  <td class="text-center"><?= htmlspecialchars($product['Publisher_Name'] ?? 'Desconhecido') ?></td>
                   <td class="text-center"><?= htmlspecialchars($product['Description']) ?></td>
                   <td class="text-center"><?= htmlspecialchars($product['Price']) ?></td>
                   <td class="text-center"><?= htmlspecialchars($product['Stock']) ?></td>
                   <td class="text-center"><?= htmlspecialchars($product['Created_At']) ?></td>
                   <td class="text-center">
-                    <a class="btn btn-warning btn-sm" href="edit_product.php?id=<?php echo $product['ID']; ?>">Editar</a>
-                    <a class="btn btn-danger btn-sm" href="delete_product.php?id=<?php echo $product['ID']; ?>" onclick="return confirm('Tens a certeza que queres excluir este utilizador?');">Excluir</a>
+                    <a class="btn btn-warning btn-sm" href="edit_product.php?id=<?php echo $product['ID']; ?>">
+                      <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="delete_product.php?id=<?php echo $product['ID']; ?>" onclick="return confirm('Tens a certeza que queres excluir este produto?');">
+                      <i class="bi bi-trash"></i> Excluir
+                    </a>
                   </td>
                 </tr>
               <?php endwhile; ?>

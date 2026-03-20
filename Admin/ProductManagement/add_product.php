@@ -8,6 +8,12 @@
     exit();
   }
 
+  // ---- Verificar se é admin ----
+  if (!isset($_SESSION['Is_Admin']) || $_SESSION['Is_Admin'] != 1) {
+    header("Location: ../../index.php");
+    exit();
+  }
+
   $cat_sql = "SELECT ID, Name FROM categories ORDER BY Name";
   $cat_result = mysqli_query($connection, $cat_sql);
 
@@ -18,6 +24,7 @@
     $description = $_POST['Description'];
     $price = $_POST['Price'];
     $stock = $_POST['Stock'];
+    $publisher_id = $_SESSION['user_id'];
 
     $imageData = file_get_contents($_FILES['Image']['tmp_name']);
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -26,10 +33,10 @@
 
     $imageDataUrl = 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
 
-    $sql = "INSERT INTO products (Category_ID, Name, Description, Price, Stock, Image) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO products (Category_ID, Name, Description, Price, Stock, Image, Publisher_ID) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = mysqli_prepare($connection, $sql);
-    mysqli_stmt_bind_param($stmt, "issdis", $category_id, $name, $description, $price, $stock, $imageDataUrl);
+    mysqli_stmt_bind_param($stmt, "issdisi", $category_id, $name, $description, $price, $stock, $imageDataUrl, $publisher_id);
 
     if (!mysqli_stmt_execute($stmt)) {
       die("Error creating product: " . mysqli_error($connection));
@@ -49,6 +56,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adicionar Produto</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="icon" type="image/x-icon" href="../../Images/logoo.png">
   <style>
     body {
       background: url('../../Images/main_bg.png') no-repeat center center fixed;

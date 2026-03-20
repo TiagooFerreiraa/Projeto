@@ -40,7 +40,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Administration</title>
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">		<link rel="icon" type="image/x-icon" href="../../Images/logoo.png">
 		<style>
 			body {
 				background: url('../../Images/main_bg.png') no-repeat center center fixed;
@@ -103,8 +103,8 @@
 									<td class="text-center"><?= htmlspecialchars($category['Description']) ?></td>
 									<td class="text-center"><?= htmlspecialchars($category['Created_At']) ?></td>
 									<td class="text-center">
-										<a href="edit_category.php?id=<?php echo $category['ID']; ?>" class="btn btn-warning btn-sm">Editar</a>
-										<a href="delete_category.php?id=<?php echo $category['ID']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tens a certeza que queres excluir esta categoria?');">Excluir</a>
+										<a href="edit_category.php?id=<?php echo $category['ID']; ?>" class="btn btn-warning btn-sm"><i class="bi bi-pencil-square"></i> Editar</a>
+										<a href="delete_category.php?id=<?php echo $category['ID']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tens a certeza que queres excluir esta categoria?');"><i class="bi bi-trash"></i> Excluir</a>
 									</td>
 								</tr>
 							<?php endwhile; ?>
