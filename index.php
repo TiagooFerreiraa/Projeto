@@ -109,7 +109,7 @@
 							<ul class="dropdown-menu">
 								<?php foreach ($categories as $cat): ?>
 									<li>
-										<a class="dropdown-item" href="products.php?category_id=<?php echo $cat['id']; ?>">
+										<a class="dropdown-item" href="Home/products.php?category_id=<?php echo $cat['id']; ?>">
 									<i class="bi <?= htmlspecialchars($cat['Icon'] ?? 'bi-list-ul') ?> me-2"></i>
 									<?php echo htmlspecialchars($cat['name']); ?>
 								</a>
@@ -117,9 +117,14 @@
 								<?php endforeach; ?>
 							</ul>
 						</li>
-						<li class="nav-item">								<a href="profile.php" class="nav-link"><i class="bi bi-person-circle me-2"></i>Perfil</a>
-							</li>
-							<li class="nav-item">					<a href="sell_product.php" class="nav-link"><i class="bi bi-plus-circle me-2"></i>Vender um Produto</a>
+						<li class="nav-item">								
+							<a href="Home/profile.php" class="nav-link"><i class="bi bi-person-circle me-2"></i>Perfil</a>
+						</li>
+							<li class="nav-item">					
+								<a href="Home/sell_product.php" class="nav-link"><i class="bi bi-plus-circle me-2"></i>Vender um Produto</a>
+						</li>
+						<li class="nav-item">					
+								<a href="Home/my_products.php" class="nav-link"><i class="bi bi-card-checklist me-2"></i>Meus Produtos</a>
 						</li>
 						<li class="nav-item">
 							<a href="Authentication/logout.php" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i>Terminar sessão</a>
@@ -153,7 +158,7 @@
 								<p class="card-text"><strong>Categoria:</strong> <?= htmlspecialchars($product['Category_Name']) ?></p>
 						<p class="card-text"><strong>Vendedor:</strong> <?= htmlspecialchars($product['Publisher_Name'] ?? 'Desconhecido') ?> <br><small><strong>Tel:</strong> <?= htmlspecialchars($product['Publisher_Phone'] ?? 'N/D') ?></small></p>
 						<p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
-						<a href="products.php?id=<?= $product['ID'] ?>" class="btn btn-primary">Ver Produto</a>
+						<a href="Home/products.php?id=<?= $product['ID'] ?>" class="btn btn-primary">Ver Produto</a>
 							</div>
 						</div>
 					</div>

@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'Connection/connection.php';
+include '../Connection/connection.php';
 
 // ---- Requer login ----
 if (!isset($_SESSION['user'])) {
-    header("Location: Authentication/login.php");
+    header("Location: ../Authentication/login.php");
     exit();
 }
 
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error = "Erro ao criar produto: " . mysqli_error($connection);
         } else {
             mysqli_stmt_close($stmt);
-            header("Location: index.php");
+            header("Location: ../index.php");
             exit();
         }
     }
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <title>Vender Produto</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <style>
-    body { background: url('Images/main_bg.png') no-repeat center center fixed; background-size: cover; }
+    body { background: url('../Images/main_bg.png') no-repeat center center fixed; background-size: cover; }
   </style>
 </head>
 <body class="container mt-5">
@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <button type="submit" class="btn btn-success">Publicar Produto</button>
-    <a href="index.php" class="btn btn-secondary">Cancelar</a>
+    <a href="../index.php" class="btn btn-secondary">Cancelar</a>
   </form>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

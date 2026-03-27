@@ -1,10 +1,10 @@
 <?php
   session_start();
-  include 'Connection/connection.php';
+  include '../Connection/connection.php';
 
   // ---- Requer login ----
   if (!isset($_SESSION['user'])) {
-    header("Location: Authentication/login.php");
+    header("Location: ../Authentication/login.php");
     exit();
   }
 
@@ -87,10 +87,10 @@
   <title><?= $product ? htmlspecialchars($product['Name']) : htmlspecialchars($categoryName) ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="icon" type="image/x-icon" href="Images/logoo.png">
+  <link rel="icon" type="image/x-icon" href="../Images/logoo.png">
   <style>
     body {
-      background: url('Images/main_bg.png') no-repeat center center fixed;
+      background: url('../Images/main_bg.png') no-repeat center center fixed;
       background-size: cover;
       padding-top: 80px;
     }
@@ -114,7 +114,7 @@
 <body>
   <nav class="navbar bg-body-tertiary fixed-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="index.php">NovusStore</a>
+      <a class="navbar-brand" href="../index.php">NovusStore</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -126,12 +126,12 @@
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-              <a class="nav-link" href="index.php">
+              <a class="nav-link" href="../index.php">
                 <i class="bi bi-house-door-fill me-2"></i>Inicio
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="Cart/cart.php">
+              <a class="nav-link" href="../Cart/cart.php">
                 <i class="bi bi-cart-fill me-2"></i>Carrinho
               </a>
             </li>
@@ -156,7 +156,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="Authentication/logout.php" class="nav-link">
+              <a href="../Authentication/logout.php" class="nav-link">
                 <i class="bi bi-box-arrow-right me-2"></i>Terminar sessão
               </a>
             </li>
@@ -176,7 +176,7 @@
         <div class="col-md-8">
           <div class="card">
             <?php
-              $imageSrc = 'Images/default.png';
+              $imageSrc = '../Images/default.png';
               if (!empty($product['Image'])) {
                 if (strpos($product['Image'], 'data:') === 0) {
                   $imageSrc = $product['Image'];
@@ -193,12 +193,12 @@
               <p class="card-text"><strong>Vendedor:</strong> <?= htmlspecialchars($product['Publisher_Name'] ?? 'Desconhecido') ?> <br><small><strong>Tel:</strong> <?= htmlspecialchars($product['Publisher_Phone'] ?? 'N/D') ?></small></p>
               <p class="card-text"><strong>Preço:</strong> $<?= htmlspecialchars($product['Price']) ?></p>
               <p class="card-text"><strong>Unidades:</strong> <?= htmlspecialchars($product['Stock']) ?></p>
-              <form method="POST" action="Cart/add_to_cart.php" class="d-flex gap-2">
+              <form method="POST" action="../Cart/add_to_cart.php" class="d-flex gap-2">
                 <input type="hidden" name="product_id" value="<?= $product['ID'] ?>">
                 <input type="number" name="quantity" value="1" min="1" max="<?= htmlspecialchars($product['Stock']) ?>" class="form-control" style="width: 90px;">
                 <button type="submit" class="btn btn-success">Adicionar ao Carrinho</button>
               </form>
-              <a href="index.php" class="btn btn-secondary mt-2">Voltar</a>
+              <a href="../index.php" class="btn btn-secondary mt-2">Voltar</a>
             </div>
           </div>
         </div>
@@ -211,7 +211,7 @@
             <div class="col">
               <div class="card h-100">
                 <?php
-                  $imageSrc = 'Images/default.png';
+                  $imageSrc = '../Images/default.png';
                   if (!empty($product['Image'])) {
                     if (strpos($product['Image'], 'data:') === 0) {
                       $imageSrc = $product['Image'];

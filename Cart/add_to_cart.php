@@ -31,12 +31,12 @@
   }
 
   if (intval($product['Publisher_ID']) === $userId) {
-    header('Location: ../products.php?error=self_purchase');
+    header('Location: ../Home/products.php?error=self_purchase');
     exit();
   }
 
   if (intval($product['Stock']) < 1) {
-    header('Location: ../products.php?error=out_of_stock');
+    header('Location: ../Home/products.php?error=out_of_stock');
     exit();
   }
 

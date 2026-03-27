@@ -242,13 +242,13 @@ function getImageSrc($product) {
                 while ($cat = $catResult->fetch_assoc()):
                 ?>
                   <li>
-                    <a class="dropdown-item" href="../products.php?category_id=<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></a>
+                    <a class="dropdown-item" href="../Home/products.php?category_id=<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></a>
                   </li>
                 <?php endwhile; ?>
               </ul>
             </li>
             <li class="nav-item">
-              <a href="../profile.php" class="nav-link"><i class="bi bi-person-circle me-2"></i>Perfil</a>
+              <a href="../Home/profile.php" class="nav-link"><i class="bi bi-person-circle me-2"></i>Perfil</a>
             </li>
             <li class="nav-item">
               <a href="../Authentication/logout.php" class="nav-link"><i class="bi bi-box-arrow-right me-2"></i>Terminar sessão</a>

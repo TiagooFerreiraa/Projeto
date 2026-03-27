@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'Connection/connection.php';
+include '../Connection/connection.php';
 
 if (!isset($_SESSION['user'])) {
-    header('Location: Authentication/login.php');
+    header('Location: ../Authentication/login.php');
     exit();
 }
 
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['withdraw'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <style>
     body {
-			background: url('Images/main_bg.png') no-repeat center center fixed;
+			background: url('../Images/main_bg.png') no-repeat center center fixed;
 			background-size: cover;
 		}
   </style>
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['withdraw'])) {
       <input type="number" step="0.01" min="0.01" max="<?= $balance ?>" class="form-control" name="amount" required>
     </div>
     <button type="submit" name="withdraw" class="btn btn-success">Sacar</button>
-    <a href="index.php" class="btn btn-secondary">Voltar</a>
+    <a href="../index.php" class="btn btn-secondary">Voltar</a>
   </form>
 </body>
 </html>

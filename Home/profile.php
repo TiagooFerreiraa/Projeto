@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'Connection/connection.php';
+include '../Connection/connection.php';
 
 if (!isset($_SESSION['user'])) {
-    header('Location: Authentication/login.php');
+    header('Location: ../Authentication/login.php');
     exit();
 }
 
@@ -78,7 +78,7 @@ if (!$user) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-			background: url('Images/main_bg.png') no-repeat center center fixed;
+			background: url('../Images/main_bg.png') no-repeat center center fixed;
 			background-size: cover;
 		}
   </style>
@@ -115,7 +115,7 @@ if (!$user) {
       <input type="password" class="form-control" name="Password" placeholder="Nova palavra-passe">
     </div>
     <button type="submit" class="btn btn-success">Salvar</button>
-    <a href="index.php" class="btn btn-secondary">Voltar</a>
+    <a href="../index.php" class="btn btn-secondary">Voltar</a>
   </form>
 
 </body>
