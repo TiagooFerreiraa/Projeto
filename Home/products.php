@@ -2,11 +2,7 @@
   session_start();
   include '../Connection/connection.php';
 
-  // ---- Requer login ----
-  if (!isset($_SESSION['user'])) {
-    header("Location: ../Authentication/login.php");
-    exit();
-  }
+
 
   // ---- Carregar categorias para a navbar ----
   $cat_sql = "SELECT id, name, COALESCE(Icon, 'bi-list-ul') AS Icon FROM categories ORDER BY name";
